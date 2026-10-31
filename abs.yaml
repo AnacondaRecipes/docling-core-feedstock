@@ -1,0 +1,4 @@
+channels:
+  - defaults
+  - https://package-build.internal.anaconda.com/pkg-orchestrator/v1/channels/graphs/534acd49-190c-48d3-84f5-635b6dc45b99
+  - https://package-build.internal.anaconda.com/pkg-orchestrator/v1/channels/graphs/2b1715ff-a40f-4402-949b-f80d4ee5a4d0
