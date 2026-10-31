@@ -22,7 +22,7 @@ requirements:
 
 outputs:
   - name: {{ name }}
-    script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+    script: {{ "install_core.bat" if target_platform.startswith("win-") else "install_core.sh" }}
     build:
       entry_points:
         - docling-view = docling_core.cli.view:app
