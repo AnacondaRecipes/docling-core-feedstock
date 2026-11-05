@@ -11,7 +11,7 @@ source:
 
 build:
   number: 0
-  skip: true  # [py<310 or (osx and x86_64)]
+  skip: true  # [py<310]
 
 requirements:
   host:
@@ -50,7 +50,6 @@ outputs:
         - requests >=2.34.2,<3.0.0
       run_constrained:
         - python <4.0
-        # chunking/chunking-openai and examples; dclq is a separate feature output.
         - semchunk >=2.2.0,<4.0.0
         - tree-sitter >=0.25.0,<0.27.0
         - tree-sitter-python >=0.23.6
@@ -73,7 +72,6 @@ outputs:
         - docling-view --help
         - docling-serialize --help
 
-  # Select upstream's dclq extra without tightening the base Typer lower bound.
   - name: {{ name }}-with-dclq
     requirements:
       host:
