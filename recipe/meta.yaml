@@ -1,0 +1,112 @@
+{% set name = "docling-core" %}
+{% set version = "2.105.0" %}
+
+package:
+  name: {{ name }}-split
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/d/{{ name }}/docling_core-{{ version }}.tar.gz
+  sha256: 01db20cf35100b776f348602729c45516487536e60ffa4c81a6979aee91f7bb2
+
+build:
+  number: 0
+  skip: true  # [py<310]
+
+requirements:
+  host:
+    - python
+    - pip
+    # No build-system table: pip falls back to setuptools.build_meta:__legacy__.
+    - setuptools >=77
+
+outputs:
+  - name: {{ name }}
+    script: {{ "install_core.bat" if target_platform.startswith("win-") else "install_core.sh" }}
+    build:
+      entry_points:
+        - docling-view = docling_core.cli.view:app
+        - docling-serialize = docling_core.cli.serialize:app
+    requirements:
+      host:
+        - python
+        - pip
+        - setuptools >=77
+      run:
+        - python
+        - jsonschema >=4.16.0,<5.0.0
+        - pydantic >=2.6.0,<3.0.0,!=2.10.0,!=2.10.1,!=2.10.2
+        - jsonref >=1.1.0,<2.0.0
+        - tabulate >=0.9.0,<0.11.0
+        - pandas >=2.1.4,<4.0.0
+        - pillow >=10.0.0,<14.0.0
+        - pyyaml >=5.1,<7.0.0
+        - typing_extensions >=4.12.2,<5.0.0
+        - typer >=0.12.5,<0.28.0
+        - latex2mathml >=3.77.0,<4.0.0
+        - defusedxml >=0.7.1,<0.8.0
+        - pydantic-settings >=2.14.0
+        - doclang >=0.8,<0.9
+        - requests >=2.34.2,<3.0.0
+      run_constrained:
+        - python <4.0
+        - semchunk >=2.2.0,<4.0.0
+        - tree-sitter >=0.25.0,<0.27.0
+        - tree-sitter-python >=0.23.6
+        - tree-sitter-c >=0.23.4
+        - tree-sitter-javascript >=0.23.1
+        - tree-sitter-typescript >=0.23.2
+        - transformers >=4.42.0,<6.0.0
+        - tiktoken >=0.9.0,<0.15.0
+        - datasets >=4.0.0
+        - matplotlib-base >=3.7.0
+        - openpyxl >=3.1.5
+    test:
+      imports:
+        - docling_core
+        - docling_core.types.doc
+      requires:
+        - pip
+      commands:
+        - pip check
+        - docling-view --help
+        - docling-serialize --help
+
+  - name: {{ name }}-with-dclq
+    requirements:
+      host:
+        - python
+      run:
+        - python
+        - {{ pin_subpackage(name, exact=True) }}
+        - doclang >=0.8,<0.9
+        - typer >=0.26.0,<0.28.0
+        - lxml >=6.0.2
+    test:
+      imports:
+        - docling_core.types.doc
+        - lxml.etree
+      requires:
+        - pip
+      commands:
+        - pip check
+        - docling-view --help
+
+about:
+  home: https://github.com/docling-project
+  dev_url: https://github.com/docling-project/docling-core
+  doc_url: https://docling-project.github.io/docling
+  summary: Define and validate data types in Docling
+  description: |
+    Docling Core provides Python data types, validation, document serialization
+    and utilities for the Docling document-processing toolkit.
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+
+extra:
+  skip-lints:
+    - missing_pip_check  # Both real outputs run pip check; no ignored global test.
+  recipe-maintainers:
+    - kklein
+    - mgorny
