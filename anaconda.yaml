@@ -5,3 +5,4 @@ upstream_sources:
     packages:
       - docling-core
       - docling-core-with-dclq
+      - docling-core-with-chunking
