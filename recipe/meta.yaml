@@ -10,15 +10,12 @@ source:
   sha256: 01db20cf35100b776f348602729c45516487536e60ffa4c81a6979aee91f7bb2
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<310]
 
 requirements:
   host:
     - python
-    - pip
-    # No build-system table: pip falls back to setuptools.build_meta:__legacy__.
-    - setuptools >=77
 
 outputs:
   - name: {{ name }}
@@ -49,9 +46,8 @@ outputs:
         - doclang >=0.8,<0.9
         - requests >=2.34.2,<3.0.0
       run_constrained:
-        - python <4.0
         - semchunk >=2.2.0,<4.0.0
-        - tree-sitter >=0.25.0,<0.27.0
+        - tree_sitter >=0.25.0,<0.27.0
         - tree-sitter-python >=0.23.6
         - tree-sitter-c >=0.23.4
         - tree-sitter-javascript >=0.23.1
@@ -74,7 +70,7 @@ outputs:
 
   - name: {{ name }}-with-dclq
     requirements:
-      host:
+      host: # analint: missing_python_build_tool
         - python
       run:
         - python
@@ -85,12 +81,32 @@ outputs:
     test:
       imports:
         - docling_core.types.doc
-        - lxml.etree
       requires:
         - pip
       commands:
         - pip check
-        - docling-view --help
+
+  - name: {{ name }}-with-chunking
+    requirements:
+      host: # analint: missing_python_build_tool
+        - python
+      run:
+        - python
+        - {{ pin_subpackage(name, exact=True) }}
+        - semchunk >=2.2.0,<4.0.0
+        - tree_sitter >=0.25.0,<0.27.0
+        - tree-sitter-python >=0.23.6
+        - tree-sitter-c >=0.23.4
+        - tree-sitter-javascript >=0.23.1
+        - tree-sitter-typescript >=0.23.2
+        - transformers >=4.42.0,<6.0.0
+    test:
+      imports:
+        - docling_core.transforms.chunker
+      requires:
+        - pip
+      commands:
+        - pip check
 
 about:
   home: https://github.com/docling-project
